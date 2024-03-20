@@ -1,0 +1,7 @@
+{
+  "name":"PPO",
+  "descriptions":["pewpew-overhaul"],
+  "information": "Ovarhauled pewpew API, also the successor of PPLAF",
+  "entry_point":"level.lua",
+  "has_score_leaderboard":false
+}
