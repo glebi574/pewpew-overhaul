@@ -1,4 +1,4 @@
-function debug_print_contents(arr)
+function debug_print_contents(arr) -- prints contents of table, sorted by first letter
   local contents = {}
   for key, value in pairs(arr) do
     table.insert(contents, {tostring(key), tostring(value)})

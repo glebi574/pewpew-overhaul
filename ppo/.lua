@@ -5,12 +5,16 @@ emoji_nice     = '\u{2705}'
 fmath_old = nil
 pewpewinternal = nil
 
-local _require = require
-function require(path)
-  return _require('/dynamic/' .. path .. '.lua')
+function mpath(path)
+  return '/dynamic/' .. path .. '.lua'
 end
 
-local function ppo_load(path)
+local _require = require
+function require(path)
+  return _require(mpath(path))
+end
+
+function ppo_load(path)
   return require('ppo/' .. path)
 end
 
