@@ -5,6 +5,8 @@ function print(...) -- adds ability to use fx numbers with print ; doesn't fix n
   for i = 1, arg_amount do
     if type(output[i]) == 'number' then
       output[i] = string.format(output[i])
+    elseif output[i] == nil then
+      output[i] = 'nil'
     end
   end
   _print(table.unpack(output))

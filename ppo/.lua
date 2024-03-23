@@ -14,14 +14,14 @@ function require(path)
   return _require(mpath(path))
 end
 
-function ppo_load(path)
-  return require('ppo/' .. path)
-end
 
-ppo_load'base'
-ppo_load'fmath'
-ppo_load'pewpew'
-ppo_load'debug'
-ppo_load'tests'
+require'ppo/base'
+require'ppo/fmath'
+require'ppo/pewpew'
+
+if not PPO_NDEBUG then
+  require'ppo/debug'
+  require'ppo/tests'
+end
 
 --debug_print_contents(fmath)

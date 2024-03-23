@@ -1,5 +1,5 @@
-ppo_load'pewpew_player'
-ppo_load'pewpew_bullet'
+require'ppo/pewpew_player'
+require'ppo/pewpew_bullet'
 
 add_update_callback = pewpew.add_update_callback
 stop_game = pewpew.stop_game
@@ -35,18 +35,14 @@ function configure_hud_string(str)
   return cfg_hud(0, {top_left_line = str})
 end
 
-local _play_soundA = pewpew.play_ambient_sound
-function play_ambient_sound(path, index)
-  return _play_soundA(mpath(path), index or 0)
-end
-
 local _play_sound = pewpew.play_sound
-function play_sound(path, x, y, index)
-  return _play_sound(mpath(path), index or 0, x, y)
+local _play_soundA = pewpew.play_ambient_sound
+function play_sound(path, v1, v2, v3)
+  return v2 and _play_soundA(mpath(path), v1, v2, v3 or 0) or _play_sound(mpath(path), v1 or 0)
 end
 
 local _new_entity = pewpew.new_customizable_entity
-local _entity_smooth = pewpew.entity_set_posisiton_interpolation
+local _entity_smooth = pewpew.customizable_entity_set_position_interpolation
 function new_entity(x, y)
   local id = _new_entity(x, y)
   _entity_smooth(id, true)
@@ -62,6 +58,23 @@ end
 local _set_scale = pewpew.customizable_entity_set_mesh_xyz_scale
 function entity_set_mesh_scale(id, x, y, z)
   return _set_scale(id, x, y or x, z or y and 1fx or x)
+end
+
+local _conf = pewpew.configure_player
+function set_joystick_color(c1, c2)
+  return _conf(0, {move_joystick_color = c1, shoot_joystick_color = c2})
+end
+
+function set_camera_pos(x, y, z)
+  return _conf(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z - 1000fx or 0fx})
+end
+
+function set_camera_z(z)
+  return _conf(0, {camera_distance = z - 1000fx})
+end
+
+function set_camera_angle(x)
+  return _conf(0, {camera_rotation_x_axis = x})
 end
 
 pewpew = nil
