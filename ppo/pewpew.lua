@@ -3,7 +3,6 @@ require'ppo/pewpew_bullet'
 
 add_update_callback = pewpew.add_update_callback
 stop_game = pewpew.stop_game
-get_inputs = pewpew.get_player_inputs
 create_explosion = pewpew.create_explosion
 entity_set_pos = pewpew.entity_set_posisiton
 entity_is_alive = pewpew.entity_get_is_alive
@@ -28,6 +27,11 @@ end
 local get_scr = pewpew.get_score_of_player
 function get_score()
   return get_scr(0)
+end
+
+local _get_inputs = pewpew.get_player_inputs
+function get_inputs()
+  return _get_inputs(0)
 end
 
 local cfg_hud = pewpew.configure_player_hud
@@ -76,5 +80,3 @@ end
 function set_camera_angle(x)
   return _conf(0, {camera_rotation_x_axis = x})
 end
-
-pewpew = nil
