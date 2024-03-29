@@ -2,9 +2,8 @@ emoji_error    = '\u{1f6d1}'
 emoji_warning  = '\u{26a0}'
 emoji_nice     = '\u{2705}'
 
-local sf = string.format
 function mpath(path)
-  return sf('%s%s%s', '/dynamic/', path ,'.lua')
+  return string.format('%s%s%s', '/dynamic/', path ,'.lua')
 end
 
 local _r = require
@@ -14,7 +13,7 @@ end
 
 function ppo_require(...)
   for _, path in ipairs{...} do
-    require(sf('%s%s', 'ppo/', path))
+    require(string.format('%s%s', 'ppo/', path))
   end
 end
 
