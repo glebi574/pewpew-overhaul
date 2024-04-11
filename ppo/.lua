@@ -37,7 +37,7 @@ function rmn(...)
 end
 
 if not PPO_NDEBUG then
-  ppo_require('debug', 'tests')
+  ppo_require('debug')
 end
 
 ppo_require('base', 'fmath', 'pewpew')

@@ -5,8 +5,8 @@ add_update_callback = pewpew.add_update_callback
 stop_game = pewpew.stop_game
 create_explosion = pewpew.create_explosion
 entity_set_pos = pewpew.entity_set_posisiton
-entity_is_alive = pewpew.entity_get_is_alive
-entity_is_exploding = pewpew.entity_get_is_started_to_be_destroyed
+entity_get_is_alive = pewpew.entity_get_is_alive
+entity_get_is_exploding = pewpew.entity_get_is_started_to_be_destroyed
 entity_destroy = pewpew.entity_destroy
 entity_set_mesh_color = pewpew.customizable_entity_set_mesh_color
 entity_set_string = pewpew.customizable_entity_set_string
@@ -29,11 +29,6 @@ function get_score()
   return gs(0)
 end
 
-local gi = pewpew.get_player_inputs
-function get_inputs()
-  return gi(0)
-end
-
 local ch = pewpew.configure_player_hud
 function configure_hud_string(str)
   return ch(0, {top_left_line = str})
@@ -47,9 +42,9 @@ end
 
 local ne = pewpew.new_customizable_entity
 local es = pewpew.customizable_entity_set_position_interpolation
-function new_entity(x, y)
+function new_entity(x, y, v)
   local id = ne(x, y)
-  es(id, true)
+  es(id, v or true)
   return id
 end
 
@@ -77,6 +72,9 @@ function set_camera_z(z)
   return c(0, {camera_distance = z - 1000fx})
 end
 
-function set_camera_angle(x)
-  return c(0, {camera_rotation_x_axis = x})
-end
+
+local gi = pewpew.get_player_inputs
+inputs = {}
+add_update_callback(function()
+  inputs.ma, inputs.md, inputs.sa, inputs.sd = gi(0)
+end)
