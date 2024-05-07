@@ -1,10 +1,17 @@
-ppo_require'pewpew_player'
-ppo_require'pewpew_bullet'
+ppo_require'entity'
+
+if PPO_DEF_PLAYER then
+  ppo_require'pewpew_player'
+end
+
+if PPO_DEF_BULLET then
+  ppo_require'pewpew_bullet'
+end
 
 add_update_callback = pewpew.add_update_callback
 stop_game = pewpew.stop_game
 create_explosion = pewpew.create_explosion
-entity_set_pos = pewpew.entity_set_posisiton
+entity_set_pos = pewpew.entity_set_position
 entity_get_is_alive = pewpew.entity_get_is_alive
 entity_get_is_exploding = pewpew.entity_get_is_started_to_be_destroyed
 entity_destroy = pewpew.entity_destroy
@@ -37,7 +44,11 @@ end
 local ps = pewpew.play_sound
 local psa = pewpew.play_ambient_sound
 function play_sound(path, v1, v2, v3)
-  return v2 and psa(mpath(path), v1, v2, v3 or 0) or ps(mpath(path), v1 or 0)
+  if v2 then
+    ps(mpath(path), v3 or 0, v1, v2)
+  else
+    psa(mpath(path), v1 or 0)
+  end
 end
 
 local ne = pewpew.new_customizable_entity
@@ -49,7 +60,7 @@ function new_entity(x, y, v)
 end
 
 local sm = pewpew.customizable_entity_set_mesh
-local sa = pewpew.entity_set_flipping_meshes
+local sa = pewpew.customizable_entity_set_flipping_meshes
 function entity_set_mesh(id, path, i1, i2)
   return i2 and sa(id, mpath(path), i1, i2) or sm(id, mpath(path), i1 or 0)
 end
