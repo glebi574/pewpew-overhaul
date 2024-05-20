@@ -13,8 +13,12 @@ end
 
 function ppo_require(...)
   for _, path in ipairs{...} do
-    require(string.format('%s%s', 'ppo/', path))
+    require(string.format('%s/%s', 'ppo', path))
   end
+end
+
+function ppo_grequire(path)
+  return require(string.format('%s/%s', 'ppo', path))
 end
 
 function rm(a)
@@ -41,7 +45,7 @@ if not PPO_NDEBUG then
 end
 
 ppo_require('base', 'fmath', 'pewpew', 'entity')
-entity.def_keys('i_type', 'i_pid', 'i_id', 'i_x', 'i_y')
+entity.def_keys('i_type', 'i_name', 'i_pid', 'i_id', 'i_x', 'i_y', 'i_hp')
 if PPO_DEF_PLAYER then
   ppo_require'pewpew_player'
 end

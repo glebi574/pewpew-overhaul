@@ -1,7 +1,8 @@
 local p = {}
 
 function p:set_pos(x, y)
-  return entity_set_pos(self[i_id], x, y)
+  self[i_x] = x
+  self[i_y] = y
 end
 
 function p:get_pos()
@@ -9,7 +10,8 @@ function p:get_pos()
 end
 
 function p:change_pos(x, y)
-  return entity_set_pos(self[i_id], self[i_x] + x, self[i_y] + y)
+  self[i_x] = self[i_x] + x
+  self[i_y] = self[i_y] + y
 end
 
 function p:get_is_alive()
@@ -66,6 +68,13 @@ end
 
 function p:set_mesh_scale(...)
   return entity_set_mesh_scale(self[i_id], ...)
+end
+
+function p:new(x, y, v)
+  self[i_x] = x
+  self[i_y] = y
+  self[i_id] = new_entity(x, y, v)
+  return self[i_id]
 end
 
 function p:remove()
