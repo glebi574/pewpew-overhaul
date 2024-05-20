@@ -40,7 +40,14 @@ if not PPO_NDEBUG then
   ppo_require('debug')
 end
 
-ppo_require('base', 'fmath', 'pewpew')
+ppo_require('base', 'fmath', 'pewpew', 'entity')
+entity.def_keys('i_type', 'i_pid', 'i_id', 'i_x', 'i_y')
+if PPO_DEF_PLAYER then
+  ppo_require'pewpew_player'
+end
+if PPO_DEF_BULLET then
+  ppo_require'pewpew_bullet'
+end
 
 rmn('pewpew', 'fmath', 'fmath_old', 'pewpewinternal')
 

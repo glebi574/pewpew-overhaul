@@ -68,4 +68,15 @@ function p:set_mesh_scale(...)
   return entity_set_mesh_scale(self[i_id], ...)
 end
 
+function p:remove()
+  local pid = self[i_pid]
+  entities[pid] = nil
+  if self[i_type].groups then
+    for _, group_name in ipairs(self[i_type].groups) do
+      entity_groups[group_name][pid] = nil
+    end
+  end
+  entity.amount = entity.amount - 1
+end
+
 return p

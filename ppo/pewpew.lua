@@ -79,13 +79,3 @@ inputs = {}
 add_update_callback(function()
   inputs.ma, inputs.md, inputs.sa, inputs.sd = gi(0)
 end)
-
-ppo_require'entity'
-
-if PPO_DEF_PLAYER then
-  ppo_require'pewpew_player'
-end
-
-if PPO_DEF_BULLET then
-  ppo_require'pewpew_bullet'
-end
