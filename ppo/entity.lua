@@ -88,6 +88,12 @@ function entity.def_keys(...) -- defines key indexes
   end
 end
 
+function entity.add_groups(...)
+  for _, group_name in ipairs{...} do
+    entity_groups[group_name] = {}
+  end
+end
+
 function entity.main() -- maintains ai of all entities
   for _, e in pairs(entities) do
     if e[i_type].ai then
