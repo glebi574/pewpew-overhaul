@@ -17,7 +17,6 @@ end
 
 function type.ai(e)
   e:change_pos(inputs.mdx * speed, inputs.mdy * speed)
-  set_camera_pos(e:get_pos())
 end
 
 return type

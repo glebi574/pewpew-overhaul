@@ -19,6 +19,16 @@ function fx_random(a, b)
   return not a and r(0fx, 1fx) or not b and r(0fx, a) or r(a, b)
 end
 
+function fx_sin(a)
+  local sin = fx_sincos(a)
+  return sin
+end
+
+function fx_cos(a)
+  local _, cos = fx_sincos(a)
+  return cos
+end
+
 function abs(a)
   return a > 0 and a or -a
 end
