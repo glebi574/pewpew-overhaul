@@ -4,8 +4,6 @@ entity_groups = {}
 
 entity = {}
 
-entity.types = {}
-
 entity.amount = 0 -- entity counter
 
 local tmp_path = 0 -- stores latest path to folder with types
@@ -31,6 +29,9 @@ local function create_entity(type, ...) -- creates entity
   if type.constructor then
     type.constructor(e, ...)
   end
+  if type.wall_collision == true then
+    wall.entities[pid] = {e[i_x], e[i_y]}
+  end
   
   entities[pid] = e
   if type.groups then
@@ -45,7 +46,6 @@ local function maintain_type(type_name) -- defines type, maintains other things 
   type_path = string.format('%s/%s/', tmp_path, type_name) -- global name with path to folder with type, that exists while it's being loaded
   local type = require(string.format('%stype', type_path)) -- /dynamic/path/type_name/type.lua
   type[i_name] = type_name
-  entity.types[type_name] = type
   
   if type.proto then
     setmetatable(type.proto, entity_proto_mt)
@@ -53,6 +53,7 @@ local function maintain_type(type_name) -- defines type, maintains other things 
   end
   
   local gtype = {} -- global type with new() and variables, specified by type
+  gtype.type = type
   function gtype.new(...)
     return create_entity(type, ...)
   end
@@ -74,7 +75,6 @@ end
 
 function entity.unload_types(...) -- unloads resources, allocated for specified types
   for _, type_name in ipairs{...} do
-    entity.types[type_name] = nil
     _ENV[type_name] = nil
   end
 end
@@ -95,12 +95,19 @@ function entity.add_groups(...)
 end
 
 function entity.main() -- maintains ai of all entities
+  -- call ai
   for _, e in pairs(entities) do
     if e[i_type].ai then
       e[i_type].ai(e)
     end
+  end
+  -- process wall collisions
+  wall.main()
+  -- update positions
+  for _, e in pairs(entities) do
     if e[i_id] then
       entity_set_pos(e[i_id], e[i_x], e[i_y])
     end
   end
+  
 end

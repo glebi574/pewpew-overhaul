@@ -44,8 +44,8 @@ if not PPO_NDEBUG then
   ppo_require('debug')
 end
 
-ppo_require('base', 'fmath', 'pewpew', 'entity')
-entity.def_keys('i_type', 'i_name', 'i_pid', 'i_id', 'i_x', 'i_y', 'i_hp')
+ppo_require('base', 'fmath', 'pewpew', 'entity', 'wall')
+entity.def_keys('i_type', 'i_name', 'i_pid', 'i_id', 'i_x', 'i_y', 'i_radius', 'i_hp')
 if PPO_DEF_PLAYER then
   ppo_require'pewpew_player'
 end

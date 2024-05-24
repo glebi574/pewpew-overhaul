@@ -18,3 +18,7 @@ local r = fmath.random_fixedpoint
 function fx_random(a, b)
   return not a and r(0fx, 1fx) or not b and r(0fx, a) or r(a, b)
 end
+
+function abs(a)
+  return a > 0 and a or -a
+end

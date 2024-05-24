@@ -80,6 +80,7 @@ end
 function p:remove()
   local pid = self[i_pid]
   entities[pid] = nil
+  wall.entities[pid] = nil
   if self[i_type].groups then
     for _, group_name in ipairs(self[i_type].groups) do
       entity_groups[group_name][pid] = nil
