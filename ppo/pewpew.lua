@@ -70,11 +70,11 @@ function set_joystick_color(c1, c2)
 end
 
 function set_camera_pos(x, y, z)
-  return c(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z - 1000fx or nil})
+  return c(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z + 1000fx or nil})
 end
 
 function set_camera_z(z)
-  return c(0, {camera_distance = z - 1000fx})
+  return c(0, {camera_distance = z + 1000fx})
 end
 
 

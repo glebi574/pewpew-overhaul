@@ -1,6 +1,6 @@
 local mesh_path = type_path .. 'mesh'
 local hp = 10
-local speed = 5fx
+local speed = 10fx
 
 local t = {}
 local proto = {}
@@ -13,6 +13,7 @@ function t.constructor(e, x, y)
   e:new(x, y)
   e:start_spawning()
   e:set_mesh(mesh_path)
+  e:set_mesh_color(0xff0000ff)
 end
 
 function t.ai(e)

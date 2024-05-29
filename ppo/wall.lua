@@ -3,10 +3,10 @@ local FX_PI3_4 = FX_PI + FX_PI2
 local p = 0.64fx -- precision error, due to fx being inprecise on this level
 local np = -p
 local n = p * 2fx -- repulsion to not get stuck in wall
-local Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, Qx, Qy, Hx, Hy
-local ABk, ABb, CDk, CDb, AHk, AHb
+local Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, Qx, Qy, Rx, Ry
+local ABk, ABb, CDk, CDb
 local ABmin_x, ABmin_y, ABmax_x, ABmax_y, CDmin_x, CDmin_y, CDmax_x, CDmax_y
-local ABdx, ABdy, QBdx, QBdy, QFdx, QFdy, AHdx, AHdy, ABl, QBl, QFl, AHl, ABa, QNa, QFa
+local ABdx, ABdy, QBdx, QBdy, QNdx, QNdy, QFdx, QFdy, QBl, QFl, ABa, QNa, QFa
 
 wall = {}
 
@@ -52,6 +52,7 @@ local function check_wall_collision(wid)
     Qx = (CDb - ABb) / (ABk - CDk)
     Qy = ABk * Qx + ABb
   end
+  
   if Qx < ABmin_x + np or Qx > ABmax_x + p or
      Qx < CDmin_x + np or Qx > CDmax_x + p or
      Qy < ABmin_y + np or Qy > ABmax_y + p or
@@ -65,75 +66,80 @@ local function check_wall_collision(wid)
   else
     QNa = CDa + FX_PI2
   end
-  QNdy, QNdx = fx_sincos(QNa)
-  Ax, Ay = Qx + QNdx * n, Qy + QNdy * n
-  
   if fx_abs(fx_abs(da) - FX_PI) < FX_PI2 then
     QFa = CDa + FX_PI
   else
     QFa = CDa
   end
-  QBdx, QBdy = Bx - Qx, By - Qy
-  QBl = fx_sqrt(QBdx * QBdx + QBdy * QBdy)
-  QFl = fx_abs(QBl * fx_cos(da))
-  QFdy, QFdx = fx_sincos(QFa)
-  
-  Bx = Ax + QFdx * QFl
-  By = Ay + QFdy * QFl
-  ABk, ABb, ABmin_x, ABmin_y, ABmax_x, ABmax_y = calculate_line(Ax, Ay, Bx, By)
-  ABdx, ABdy = Bx - Ax, By - Ay
-  ABa = fx_atan2(ABdy, ABdx)
-  return true
+  return Qx, Qy, QNa, QFa
 end
 
 local function check_wall_collisions()
-  local tmp_walls = {}
-  for wid, w in pairs(walls_line) do
-    Cx, Cy, Dx, Dy, CDk, CDb, CDa, CDmin_x, CDmin_y, CDmax_x, CDmax_y = table.unpack(w)
-    if not CDk then
-      AHk = 0fx
-      AHb = Ay
-      Hx = Cx
-      Hy = Ay
-    elseif CDk == 0fx then
-      AHk = false
-      AHb = false
-      Hx = Ax
-      Hy = Cy
+  local collisions = {}
+  for wid, wall in pairs(walls_line) do
+    if check_wall_collision(wid) then
+      table.insert(collisions, {Qx, Qy, QNa, QFa})
+    end
+  end
+  if #collisions == 0 then
+    Rx, Ry = Bx, By
+    return nil
+  elseif #collisions == 1 then
+    Qx, Qy, QNa, QFa = table.unpack(collisions[1])
+  else
+    local min_i = 1
+    local min_dx, min_dy = collisions[1][1] - Ax, collisions[1][2] - Ay
+    local min_ls = min_dx * min_dx + min_dy * min_dy
+    for i = 2, #collisions do
+      local dx, dy = collisions[i][1] - Ax, collisions[i][2] - Ay
+      local ls = dx * dx + dy * dy
+      if ls < min_ls then
+        min_i = i
+        min_dx, min_dy = dx, dy
+        min_ls = ls
+      end
+    end
+    
+    local is_corner = true
+    for i = 1, #collisions do
+      if fx_abs(collisions[i][1] - collisions[min_i][1]) > p or fx_abs(collisions[i][2] - collisions[min_i][2]) > p then
+        is_corner = false
+        break
+      end
+    end
+    if is_corner then
+      local _QNdx, _QNdy = 0fx, 0fx
+      for i = 1, #collisions do
+        local QNdy, QNdx = fx_sincos(collisions[i][3])
+        _QNdx, _QNdy = _QNdx + QNdx * n, _QNdy + QNdy * n
+      end
+      Rx, Ry = collisions[min_i][1] + _QNdx, collisions[min_i][2] + _QNdy
+      return nil
     else
-      AHk = -1fx / CDk
-      AHb = Ay - AHk * Ax
-      Hx = (AHb - CDb) / (CDk - AHk)
-      Hy = AHk * Hx + AHb
-    end
-    AHdx, AHdy = Hx - Ax, Hy - Ay
-    AHl = fx_sqrt(AHdx * AHdx + AHdy * AHdy)
-    if AHl <= ABl then
-      table.insert(tmp_walls, {wid, AHl})
+      Qx, Qy, QNa, QFa = table.unpack(collisions[min_i])
     end
   end
-  if #tmp_walls == 0 then
-    return true
-  elseif #tmp_walls > 1 then
-    table.sort(tmp_walls, function(a, b) return a[2] < b[2] end)
-  end
-  local has_collided = false
-  for i, tmp_wall in ipairs(tmp_walls) do
-    if check_wall_collision(tmp_wall[1]) then
-      has_collided = true
-      table.remove(tmp_walls, i)
-      break
-    end
-  end
-  if not has_collided or #tmp_walls == 0 then
-    return true
-  end
-  for i, tmp_wall in ipairs(tmp_walls) do
-    if check_wall_collision(tmp_wall[1]) then
+  
+  QNdy, QNdx = fx_sincos(QNa)
+  QBdx, QBdy = Bx - Qx, By - Qy
+  QBl = fx_sqrt(QBdx * QBdx + QBdy * QBdy)
+  QBl = fx_abs(QBl * fx_cos(ABa - QNa - FX_PI2))
+  QFdy, QFdx = fx_sincos(QFa)
+  Bx = Qx + QNdx * n + QFdx * QBl
+  By = Qy + QNdy * n + QFdy * QBl
+  ABk, ABb, ABmin_x, ABmin_y, ABmax_x, ABmax_y = calculate_line(Ax, Ay, Bx, By)
+  ABdx, ABdy = Bx - Ax, By - Ay
+  ABa = fx_atan2(ABdy, ABdx)
+  for wid, wall in pairs(walls_line) do
+    if check_wall_collision(wid) then
+      local AQdx, AQdy = Qx - Ax, Qy - Ay
+      local AQl = fx_sqrt(AQdx * AQdx + AQdy * AQdy) - n
+      AQdy, AQdx = fx_sincos(ABa)
+      Rx, Ry = Ax + AQdx * AQl, Ay + AQdy * AQl
       return nil
     end
   end
-  return true
+  Rx, Ry = Bx, By
 end
 
 function wall.add_line(x1, y1, x2, y2)
@@ -176,16 +182,13 @@ function wall.main() -- checks wall collisions and calls collision callbacks if 
     ABk, ABb, ABmin_x, ABmin_y, ABmax_x, ABmax_y = calculate_line(Ax, Ay, Bx, By)
     ABdx, ABdy = Bx - Ax, By - Ay
     ABa = fx_atan2(ABdy, ABdx)
-    ABl = fx_sqrt(ABdx * ABdx + ABdy * ABdy)
-    local callback = e[i_type].wall_collision ~= true and e[i_type].wall_collision or nil
+    --local callback = e[i_type].wall_collision ~= true and e[i_type].wall_collision or nil
     
-    if check_wall_collisions() then
-      Ax, Ay = Bx, By
-    end
+    check_wall_collisions()
     
-    e[i_x], e[i_y] = Ax, Ay
-    wall.entities[pid][1] = Ax
-    wall.entities[pid][2] = Ay
+    e[i_x], e[i_y] = Rx, Ry
+    wall.entities[pid][1] = Rx
+    wall.entities[pid][2] = Ry
     ::wmce:: -- wall main continue end
   end
 end
