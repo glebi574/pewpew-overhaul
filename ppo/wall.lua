@@ -50,7 +50,7 @@ local function check_wall_collision(wid)
     Qy = ABk * Qx + ABb
   else
     Qx = (CDb - ABb) / (ABk - CDk)
-    Qy = ABk * Qx + ABb
+    Qy = (ABb * CDk - CDb * ABk) / (CDk - ABk)
   end
   
   if Qx < ABmin_x + np or Qx > ABmax_x + p or
