@@ -2,13 +2,15 @@ emoji_error    = '\u{1f6d1}'
 emoji_warning  = '\u{26a0}'
 emoji_nice     = '\u{2705}'
 
+PPO_VERSION = 'v0.0'
+
 function mpath(path)
   return string.format('%s%s%s', '/dynamic/', path ,'.lua')
 end
 
-local _r = require
+local __require = require
 function require(path)
-  return _r(mpath(path))
+  return __require(mpath(path))
 end
 
 function ppo_require(...)
@@ -41,16 +43,21 @@ function rmn(...)
 end
 
 if not PPO_NDEBUG then
-  ppo_require('debug')
+  ppo_require'debug'
 end
 
-ppo_require('base', 'fmath', 'pewpew', 'entity', 'wall')
-entity.def_keys('i_type', 'i_name', 'i_pid', 'i_id', 'i_x', 'i_y', 'i_radius', 'i_hp')
-if PPO_DEF_PLAYER then
-  ppo_require'pewpew_player'
-end
-if PPO_DEF_BULLET then
-  ppo_require'pewpew_bullet'
+if math then
+  add_memory_print, add_memory_warning = nil, nil
+  ppo_require('base', 'fmath', 'mesh')
+else
+  ppo_require('base', 'fmath', 'pewpew', 'entity', 'wall')
+  entity.def_keys('i_type', 'i_name', 'i_pid', 'i_id', 'i_x', 'i_y', 'i_radius', 'i_hp')
+  if PPO_DEF_PLAYER then
+    ppo_require'pewpew_player'
+  end
+  if PPO_DEF_BULLET then
+    ppo_require'pewpew_bullet'
+  end
 end
 
 rmn('pewpew', 'fmath', 'fmath_old', 'pewpewinternal')

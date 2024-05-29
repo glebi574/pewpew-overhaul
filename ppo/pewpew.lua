@@ -15,73 +15,73 @@ entity_set_render_radius = pewpew.customizable_entity_set_visibility_radius
 entity_start_exploding = pewpew.customizable_entity_start_exploding
 
 
-local is = pewpew.increase_score_of_player
+local __increase_score_of_player = pewpew.increase_score_of_player
 function increase_score(v)
-  return is(0, v)
+  return __increase_score_of_player(0, v)
 end
 
-local gs = pewpew.get_score_of_player
+local __get_score_of_player = pewpew.get_score_of_player
 function get_score()
-  return gs(0)
+  return __get_score_of_player(0)
 end
 
-local ch = pewpew.configure_player_hud
+local __configure_player_hud = pewpew.configure_player_hud
 function configure_hud_string(str)
-  return ch(0, {top_left_line = str})
+  return __configure_player_hud(0, {top_left_line = str})
 end
 
-local ps = pewpew.play_sound
-local psa = pewpew.play_ambient_sound
+local __play_sound = pewpew.play_sound
+local __play_ambient_sound = pewpew.play_ambient_sound
 function play_sound(path, v1, v2, v3)
   if v2 then
-    ps(mpath(path), v3 or 0, v1, v2)
+    __play_sound(mpath(path), v3 or 0, v1, v2)
   else
-    psa(mpath(path), v1 or 0)
+    __play_ambient_sound(mpath(path), v1 or 0)
   end
 end
 
-local ne = pewpew.new_customizable_entity
-local es = pewpew.customizable_entity_set_position_interpolation
+local __new_customizable_entity = pewpew.new_customizable_entity
+local __customizable_entity_set_position_interpolation = pewpew.customizable_entity_set_position_interpolation
 function new_entity(x, y, v)
-  local id = ne(x, y)
-  es(id, v or true)
+  local id = __new_customizable_entity(x, y)
+  __customizable_entity_set_position_interpolation(id, v or true)
   return id
 end
 
-local sm = pewpew.customizable_entity_set_mesh
-local sa = pewpew.customizable_entity_set_flipping_meshes
+local __customizable_entity_set_mesh = pewpew.customizable_entity_set_mesh
+local __customizable_entity_set_flipping_meshes = pewpew.customizable_entity_set_flipping_meshes
 function entity_set_mesh(id, path, i1, i2)
-  return i2 and sa(id, mpath(path), i1, i2) or sm(id, mpath(path), i1 or 0)
+  return i2 and __customizable_entity_set_flipping_meshes(id, mpath(path), i1, i2) or __customizable_entity_set_mesh(id, mpath(path), i1 or 0)
 end
 
-local ss = pewpew.customizable_entity_set_mesh_xyz_scale
+local __customizable_entity_set_mesh_xyz_scale = pewpew.customizable_entity_set_mesh_xyz_scale
 function entity_set_mesh_scale(id, x, y, z)
-  return ss(id, x, y or x, z or y and 1fx or x)
+  return __customizable_entity_set_mesh_xyz_scale(id, x, y or x, z or y and 1fx or x)
 end
 
-local sp = pewpew.customizable_entity_start_spawning
+local __customizable_entity_start_spawning = pewpew.customizable_entity_start_spawning
 function entity_start_spawning(id, t)
-  return sp(id, t or 0)
+  return __customizable_entity_start_spawning(id, t or 0)
 end
 
-local c = pewpew.configure_player
+local __configure_player = pewpew.configure_player
 function set_joystick_color(c1, c2)
-  return c(0, {move_joystick_color = c1, shoot_joystick_color = c2})
+  return __configure_player(0, {move_joystick_color = c1, shoot_joystick_color = c2})
 end
 
 function set_camera_pos(x, y, z)
-  return c(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z + 1000fx or nil})
+  return __configure_player(0, {camera_x_override = x, camera_y_override = y, camera_distance = z and z + 1000fx or nil})
 end
 
 function set_camera_z(z)
-  return c(0, {camera_distance = z + 1000fx})
+  return __configure_player(0, {camera_distance = z + 1000fx})
 end
 
 
-local gi = pewpew.get_player_inputs
+local __get_player_inputs = pewpew.get_player_inputs
 inputs = {}
 add_update_callback(function()
-  inputs.ma, inputs.md, inputs.sa, inputs.sd = gi(0)
+  inputs.ma, inputs.md, inputs.sa, inputs.sd = __get_player_inputs(0)
   inputs.mdy, inputs.mdx = fx_sincos(inputs.ma)
   inputs.mdy, inputs.mdx = inputs.mdy * inputs.md, inputs.mdx * inputs.md
   inputs.sdy, inputs.sdx = fx_sincos(inputs.sa)
