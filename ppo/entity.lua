@@ -14,28 +14,28 @@ local entity_proto = ppo_grequire'entity_proto' -- prototype for every entity
 local entity_proto_mt = {__index = entity_proto}
 local proto_mt = {} -- metatables for prototypes
 
-local function create_entity(type, ...) -- creates entity
+local function create_entity(t, ...) -- creates entity
   local pid = ppo_id
   ppo_id = ppo_id + 1
   entity.amount = entity.amount + 1
   local e = {}
   e[i_pid] = pid
-  e[i_type] = type
-  if type.proto then
-    setmetatable(e, proto_mt[type[i_name]])
+  e[i_type] = t
+  if t.proto then
+    setmetatable(e, proto_mt[t[i_name]])
   else
     setmetatable(e, entity_proto_mt)
   end
-  if type.constructor then
-    type.constructor(e, ...)
+  if t.constructor then
+    t.constructor(e, ...)
   end
-  if type.wall_collision == true then
+  if t.wall_collision == true then
     wall.entities[pid] = {e[i_x], e[i_y]}
   end
   
   entities[pid] = e
-  if type.groups then
-    for _, group_name in ipairs(type.groups) do
+  if t.groups then
+    for _, group_name in ipairs(t.groups) do
       entity_groups[group_name][pid] = e
     end
   end
@@ -44,21 +44,21 @@ end
 
 local function maintain_type(type_name) -- defines type, maintains other things depending on type contents
   type_path = string.format('%s/%s/', tmp_path, type_name) -- global name with path to folder with type, that exists while it's being loaded
-  local type = require(string.format('%stype', type_path)) -- /dynamic/path/type_name/type.lua
-  type[i_name] = type_name
+  local t = require(string.format('%stype', type_path)) -- /dynamic/path/type_name/type.lua
+  t[i_name] = type_name
   
-  if type.proto then
-    setmetatable(type.proto, entity_proto_mt)
-    proto_mt[type_name] = {__index = type.proto}
+  if t.proto then
+    setmetatable(t.proto, entity_proto_mt)
+    proto_mt[type_name] = {__index = t.proto}
   end
   
   local gtype = {} -- global type with new() and variables, specified by type
-  gtype.type = type
+  gtype.type = t
   function gtype.new(...)
-    return create_entity(type, ...)
+    return create_entity(t, ...)
   end
-  if type.extern then
-    for key, value in pairs(type.extern) do
+  if t.extern then
+    for key, value in pairs(t.extern) do
       gtype[key] = value
     end
   end

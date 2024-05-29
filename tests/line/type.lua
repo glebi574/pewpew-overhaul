@@ -1,8 +1,8 @@
 local mesh_path = type_path .. 'mesh'
 
-local type = {}
+local t = {}
 
-function type.constructor(e, x1, y1, x2, y2)
+function t.constructor(e, x1, y1, x2, y2)
   e:new(x1, y1)
   e:start_spawning()
   e:set_mesh(mesh_path)
@@ -11,4 +11,4 @@ function type.constructor(e, x1, y1, x2, y2)
   e:set_mesh_angle(fx_atan2(dy, dx), 0fx, 0fx, 1fx)
 end
 
-return type
+return t
