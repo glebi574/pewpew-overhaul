@@ -1,8 +1,8 @@
 local FX_PI2 = FX_PI / 2fx
 local FX_PI3_4 = FX_PI + FX_PI2
-local p = 0.64fx -- precision error, due to fx being inprecise on this level
+local p = 0.64fx -- precision error
 local np = -p
-local n = p * 2fx -- repulsion to not get stuck in wall
+local n = p * 2fx -- repulsion off the wall to prevent getting stuck in it
 local Ax, Ay, Bx, By, Cx, Cy, Dx, Dy, Qx, Qy, Rx, Ry
 local ABk, ABb, CDk, CDb
 local ABmin_x, ABmin_y, ABmax_x, ABmax_y, CDmin_x, CDmin_y, CDmax_x, CDmax_y
@@ -74,35 +74,44 @@ local function check_wall_collision(wid)
   return Qx, Qy, QNa, QFa
 end
 
-local function check_wall_collisions()
+local function get_wall_collisions()
   local collisions = {}
   for wid, wall in pairs(walls_line) do
     if check_wall_collision(wid) then
       table.insert(collisions, {Qx, Qy, QNa, QFa})
     end
   end
+  return collisions
+end
+
+local function get_closest_wall_collision(collisions)
+  local min_i = 1
+  local min_dx, min_dy = collisions[1][1] - Ax, collisions[1][2] - Ay
+  local min_ls = min_dx * min_dx + min_dy * min_dy
+  for i = 2, #collisions do
+    local dx, dy = collisions[i][1] - Ax, collisions[i][2] - Ay
+    local ls = dx * dx + dy * dy
+    if ls < min_ls then
+      min_i = i
+      min_dx, min_dy = dx, dy
+      min_ls = ls
+    end
+  end
+  return collisions[min_i]
+end
+
+local function check_wall_collisions()
+  local collisions = get_wall_collisions()
   if #collisions == 0 then
     Rx, Ry = Bx, By
     return nil
   elseif #collisions == 1 then
     Qx, Qy, QNa, QFa = table.unpack(collisions[1])
   else
-    local min_i = 1
-    local min_dx, min_dy = collisions[1][1] - Ax, collisions[1][2] - Ay
-    local min_ls = min_dx * min_dx + min_dy * min_dy
-    for i = 2, #collisions do
-      local dx, dy = collisions[i][1] - Ax, collisions[i][2] - Ay
-      local ls = dx * dx + dy * dy
-      if ls < min_ls then
-        min_i = i
-        min_dx, min_dy = dx, dy
-        min_ls = ls
-      end
-    end
-    
+    local collision = get_closest_wall_collision(collisions)
     local is_corner = true
     for i = 1, #collisions do
-      if fx_abs(collisions[i][1] - collisions[min_i][1]) > p or fx_abs(collisions[i][2] - collisions[min_i][2]) > p then
+      if fx_abs(collisions[i][1] - collision[1]) > p or fx_abs(collisions[i][2] - collision[2]) > p then
         is_corner = false
         break
       end
@@ -113,10 +122,10 @@ local function check_wall_collisions()
         local QNdy, QNdx = fx_sincos(collisions[i][3])
         _QNdx, _QNdy = _QNdx + QNdx * n, _QNdy + QNdy * n
       end
-      Rx, Ry = collisions[min_i][1] + _QNdx, collisions[min_i][2] + _QNdy
+      Rx, Ry = collision[1] + _QNdx, collision[2] + _QNdy
       return nil
     else
-      Qx, Qy, QNa, QFa = table.unpack(collisions[min_i])
+      Qx, Qy, QNa, QFa = table.unpack(collision)
     end
   end
   
@@ -130,14 +139,18 @@ local function check_wall_collisions()
   ABk, ABb, ABmin_x, ABmin_y, ABmax_x, ABmax_y = calculate_line(Ax, Ay, Bx, By)
   ABdx, ABdy = Bx - Ax, By - Ay
   ABa = fx_atan2(ABdy, ABdx)
-  for wid, wall in pairs(walls_line) do
-    if check_wall_collision(wid) then
-      local AQdx, AQdy = Qx - Ax, Qy - Ay
-      local AQl = fx_sqrt(AQdx * AQdx + AQdy * AQdy) - n
-      AQdy, AQdx = fx_sincos(ABa)
-      Rx, Ry = Ax + AQdx * AQl, Ay + AQdy * AQl
-      return nil
+  collisions = get_wall_collisions()
+  if #collisions ~= 0 then
+    if #collisions > 1 then
+      Qx, Qy, QNa, QFa = table.unpack(get_closest_wall_collision(collisions))
+    else
+      Qx, Qy, QNa, QFa = table.unpack(collisions[1])
     end
+    local AQdx, AQdy = Qx - Ax, Qy - Ay
+    local AQl = fx_sqrt(AQdx * AQdx + AQdy * AQdy) - n
+    AQdy, AQdx = fx_sincos(ABa)
+    Rx, Ry = Ax + AQdx * AQl, Ay + AQdy * AQl
+    return nil
   end
   Rx, Ry = Bx, By
 end

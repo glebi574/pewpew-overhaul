@@ -15,7 +15,8 @@ local function add_wall(x1, y1, x2, y2)
 end
 
 add_wall(-80fx, 80fx, 80fx, 80fx)
-add_wall(80fx, -80fx, 80fx, 80fx)
+add_wall(82fx, -80fx, 82fx, 100fx)
+add_wall(80fx, -80fx, 80fx, 100fx)
 
 add_wall(-120fx, 40fx, 40fx, -40fx)
 add_wall(-120fx, -40fx, 40fx, 40fx)
