@@ -1,16 +1,24 @@
+local __tostring = tostring
+function tostring(v)
+  if type(v) ~= 'number' then
+    return __tostring(v)
+  end
+  if v == 0fx or v / v == 1 then
+    return string.format(v)
+  else
+    return (v < 0fx and '-' or '') .. fx_abs(v)
+  end
+end
+
 local __print = print
 function print(...) -- adds ability to use fx numbers with print and fixes their output
   local arg_amount = select('#', ...)
   local output = {select(1, ...)}
   for i = 1, arg_amount do
-    if type(output[i]) == 'number' then
-      if output[i] == 0fx or output[i] / output[i] == 1 then
-        output[i] = string.format(output[i])
-      else
-        output[i] = (output[i] < 0fx and '-' or '') .. fx_abs(output[i])
-      end
-    elseif output[i] == nil then
+    if output[i] == nil then
       output[i] = 'nil'
+    else
+      output[i] = tostring(output[i])
     end
   end
   __print(table.unpack(output))

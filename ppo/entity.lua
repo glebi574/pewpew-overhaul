@@ -111,3 +111,5 @@ function entity.main() -- maintains ai of all entities
   end
   
 end
+
+add_update_callback(entity.main)

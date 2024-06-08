@@ -24,6 +24,5 @@ add_wall(-40fx, -80fx, 40fx, -160fx)
 add_wall(40fx, -80fx, -40fx, -160fx)
 
 add_update_callback(function()
-  entity.main()
   set_camera_pos(e:get_pos())
 end)
