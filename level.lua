@@ -6,9 +6,10 @@ require'/dynamic/ppo/.lua'
 set_camera_z(-500fx)
 
 --add_memory_print()
-entity.load_types('tests', 'example', 'line')
+entity.load_types('tests', 'example', 'line', 'circle')
 local e = example.new(70fx, 70fx)
 
+--[[
 local function add_wall(x1, y1, x2, y2)
   wall.add_line(x1, y1, x2, y2)
   line.new(x1, y1, x2, y2, 0x00ff00ff)
@@ -23,6 +24,14 @@ add_wall(-120fx, -40fx, 40fx, 40fx)
 
 add_wall(-40fx, -80fx, 40fx, -160fx)
 add_wall(40fx, -80fx, -40fx, -160fx)
+]]
+
+local function add_wall_circle(x, y, r)
+  wall.add_circle(x, y, r)
+  circle.new(x, y, r, 0x00ff00ff)
+end
+
+add_wall_circle(0fx, 0fx, 80fx)
 
 add_update_callback(function()
   set_camera_pos(e:get_pos())

@@ -43,3 +43,19 @@ function create_explosion(x, y, color, scale, particle_amount)
   end
   __create_explosion(x, y, color, scale, particle_amount)
 end
+
+local __play_sound = play_sound
+function play_sound(path, v1, v2, v3)
+  if not loadfile(mpath(path)) then
+    return error('Error, playing sound. Incorrect path was specified.')
+  end
+  return __play_sound(path, v1, v2, v3)
+end
+
+local __entity_set_mesh = entity_set_mesh
+function entity_set_mesh(id, path, i1, i2)
+  if not loadfile(mpath(path)) then
+    return error('Error, loading mesh. Incorrect path was specified.')
+  end
+  return __entity_set_mesh(id, path, i1, i2)
+end

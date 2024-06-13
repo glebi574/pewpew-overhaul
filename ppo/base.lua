@@ -24,6 +24,10 @@ function print(...) -- adds ability to use fx numbers with print and fixes their
   __print(table.unpack(output))
 end
 
+if PPO_SOUND then
+  return
+end
+
 function make_color(r, g, b, a)
 	return ((r * 256 + g) * 256 + b) * 256 + a
 end

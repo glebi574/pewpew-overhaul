@@ -20,6 +20,7 @@ pi, huge, maxinteger, mininteger = nil, nil, nil, nil
 rmn'math'
 
 
+meshes = {}
 local mesh_proto = {}
 local mesh_proto_mt = {__index = mesh_proto}
 
@@ -30,8 +31,6 @@ function def_mesh(v, s, c)
 end
 
 function def_meshes(n)
-  meshes = {}
-  n = n or 0
   for i = 1, n do
     table.insert(meshes, def_mesh())
   end
@@ -51,18 +50,18 @@ end
 function rotate_vector(x, y, z, rx, ry, rz)
   local l, angle
   
-  l = math.sqrt(y ^ 2 + z ^ 2)
-  angle = math.atan(z, y) + rx
+  l = sqrt(y ^ 2 + z ^ 2)
+  angle = atan(z, y) + rx
   y = l * cos(angle)
   z = l * sin(angle)
   
-  l = math.sqrt(x ^ 2 + z ^ 2)
-  angle = math.atan(z, x) + ry
+  l = sqrt(x ^ 2 + z ^ 2)
+  angle = atan(z, x) + ry
   x = l * cos(angle)
   z = l * sin(angle)
   
-  l = math.sqrt(x ^ 2 + y ^ 2)
-  angle = math.atan(y, x) + rz
+  l = sqrt(x ^ 2 + y ^ 2)
+  angle = atan(y, x) + rz
   x = l * cos(angle)
   y = l * sin(angle)
   
