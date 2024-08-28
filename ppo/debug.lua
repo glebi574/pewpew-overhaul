@@ -1,4 +1,7 @@
 function debug_print_contents(arr) -- prints contents of table, sorted by first letter
+  if type(arr) ~= 'table' then
+    error('Provided argument isn\'t a table.')
+  end
   local contents = {}
   for key, value in pairs(arr) do
     table.insert(contents, {tostring(key), tostring(value)})

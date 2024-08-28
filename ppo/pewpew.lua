@@ -59,7 +59,7 @@ local __new_customizable_entity = pewpew.new_customizable_entity
 local __customizable_entity_set_position_interpolation = pewpew.customizable_entity_set_position_interpolation
 function new_entity(x, y, v)
   local id = __new_customizable_entity(x, y)
-  __customizable_entity_set_position_interpolation(id, v or true)
+  __customizable_entity_set_position_interpolation(id, v == nil or v)
   return id
 end
 

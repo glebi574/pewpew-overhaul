@@ -1,6 +1,6 @@
 local mesh_path = type_path .. 'mesh'
 local hp = 10
-local speed = 10fx
+local speed = 4fx
 
 local t = {}
 local proto = {}
